@@ -1,6 +1,6 @@
 import os
 import datetime
-from flask import Flask, jsonify, g
+from flask import Flask, jsonify, g, request, make_response
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, verify_jwt_in_request, get_jwt_identity
 from flask_bcrypt import Bcrypt
@@ -8,6 +8,13 @@ from flask.json.provider import DefaultJSONProvider
 
 from config import Config
 import db as database
+
+_CORS_HEADERS = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization,Content-Type,Accept",
+    "Access-Control-Max-Age": "86400",
+}
 
 
 class ISOJSONProvider(DefaultJSONProvider):
@@ -44,6 +51,15 @@ def create_app():
                 print(f"[DB] init_db error: {e}")
 
     @app.before_request
+    def _handle_options():
+        """Responde imediatamente a qualquer OPTIONS preflight com 200 + CORS headers."""
+        if request.method == "OPTIONS":
+            resp = make_response("", 200)
+            for k, v in _CORS_HEADERS.items():
+                resp.headers[k] = v
+            return resp
+
+    @app.before_request
     def _set_db_user():
         """Extrai user_id do JWT e armazena em g para injeção RLS no db()."""
         try:
@@ -65,6 +81,12 @@ def create_app():
     app.register_blueprint(treino_bp, url_prefix="/treino")
     app.register_blueprint(resultados_bp, url_prefix="/resultados")
     app.register_blueprint(analise_bp, url_prefix="/analise")
+
+    @app.after_request
+    def _add_cors_headers(resp):
+        for k, v in _CORS_HEADERS.items():
+            resp.headers.setdefault(k, v)
+        return resp
 
     @jwt.expired_token_loader
     def expired_token_callback(jwt_header, jwt_payload):
