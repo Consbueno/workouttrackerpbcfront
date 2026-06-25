@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS ai_analyses (
     program_id      INTEGER         NOT NULL REFERENCES training_programs(id) ON DELETE CASCADE,
     analysis_text   TEXT            NOT NULL,
     input_payload   JSONB           NOT NULL,
-    model_used      VARCHAR(50)     NOT NULL DEFAULT 'claude-sonnet-4-6',
+    model_used      VARCHAR(50)     NOT NULL DEFAULT 'claude-haiku-4-5-20251001',
     created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW()
 );
 
