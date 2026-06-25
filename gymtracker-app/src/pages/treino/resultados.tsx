@@ -4,7 +4,7 @@ import { Plus, Scale } from 'lucide-react'
 import { PageHeader } from '@/components/layout/page-header'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { WeightChart } from '@/components/charts/weight-chart'
+import { WeightChart, type WeightPoint } from '@/components/charts/weight-chart'
 import { MeasurementsChart } from '@/components/charts/measurements-chart'
 import { medicoesApi } from '@/api/resultados'
 import { formatDate } from '@/lib/utils'
@@ -55,7 +55,7 @@ export default function ResultadosPage() {
               <CardTitle className="text-sm">Evolução do Peso (kg)</CardTitle>
             </CardHeader>
             <CardContent>
-              <WeightChart data={medicoes} />
+              <WeightChart data={medicoes.filter((m): m is Medicao & WeightPoint => m.weight_kg != null)} />
             </CardContent>
           </Card>
 

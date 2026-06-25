@@ -3,7 +3,7 @@ import {
 } from 'recharts'
 import { formatDate } from '@/lib/utils'
 
-interface WeightPoint { measurement_date: string; weight_kg: number }
+export interface WeightPoint { measurement_date: string; weight_kg: number }
 
 export function WeightChart({ data }: { data: WeightPoint[] }) {
   if (!data || data.length < 2) {

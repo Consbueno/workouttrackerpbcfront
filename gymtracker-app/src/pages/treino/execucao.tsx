@@ -202,7 +202,7 @@ export default function ExecucaoPage() {
               const msg = completedCount < exercises.length
                 ? `Deseja concluir com ${completedCount} de ${exercises.length} exercícios realizados?`
                 : 'Confirma a conclusão do treino?'
-              if (confirm(msg)) completeMutation.mutate()
+              if (confirm(msg)) completeMutation.mutate(undefined)
             }}
             disabled={completeMutation.isPending}
           >
