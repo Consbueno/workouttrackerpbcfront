@@ -49,21 +49,28 @@ postgresql://postgres.[PROJECT_REF]:[YOUR-PASSWORD]@aws-0-[REGION].supabase.com:
 > Se não encontrar a seção "Connection string" na aba Database, procure por
 > **"Connection pooling"** — alguns planos exibem as strings lá.
 
-### 4. Configurar variáveis de ambiente do backend
+### 4. Colar a connection string no arquivo .env
 
-```bash
-cp gymtracker-api/.env.example gymtracker-api/.env
-```
-
-Edite `gymtracker-api/.env`:
+Abra o arquivo `gymtracker-api/.env` (já existe no projeto) e cole a string
+copiada do Supabase como valor de `DATABASE_URL`:
 
 ```env
-DATABASE_URL=postgresql://postgres.[REF]:[PASS]@aws-0-[REGION].supabase.com:5432/postgres
-SECRET_KEY=<string aleatória 64 chars>
-JWT_SECRET_KEY=<outra string aleatória>
-ANTHROPIC_API_KEY=sk-ant-api03-...
-FRONTEND_URL=https://seu-dominio.com
+DATABASE_URL=postgresql://postgres.abcdefghijklm:SuaSenhaAqui@aws-0-sa-east-1.supabase.com:5432/postgres
 ```
+
+Preencha também as outras variáveis do mesmo arquivo:
+
+```env
+DATABASE_URL=<string copiada do Supabase — substitua [YOUR-PASSWORD] pela senha real>
+
+SECRET_KEY=<qualquer string longa e aleatória, ex: abcd1234...64chars>
+JWT_SECRET_KEY=<outra string longa e diferente da anterior>
+
+ANTHROPIC_API_KEY=sk-ant-api03-...   ← chave da sua conta em console.anthropic.com
+FRONTEND_URL=https://seu-dominio.com  ← URL onde o frontend vai rodar
+```
+
+Salve o arquivo. O backend lê `.env` automaticamente ao iniciar.
 
 ---
 
