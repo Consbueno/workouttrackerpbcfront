@@ -33,6 +33,17 @@ export function useLastDay() {
   })
 }
 
+export function useHistoricoDias() {
+  return useQuery({
+    queryKey: ['historico-dias'],
+    queryFn: () => diasApi.list({ status: 'completed,missed' }).then(r => r.data.data as {
+      id: number; day_number: number; week_number: number; status: string;
+      letter: string; split_description: string; block_name: string; completed_at: string | null;
+    }[]),
+    staleTime: 10_000,
+  })
+}
+
 export function useProgramSummary(id: number | undefined) {
   return useQuery({
     queryKey: ['programa-resumo', id],

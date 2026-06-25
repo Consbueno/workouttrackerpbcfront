@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { CheckCircle2, XCircle, Save, AlertCircle, RotateCcw } from 'lucide-react'
-import { useNextDay, useDay, useLastDay } from '@/hooks/use-training'
+import { CheckCircle2, XCircle, Save, AlertCircle, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react'
+import { useNextDay, useDay, useLastDay, useHistoricoDias } from '@/hooks/use-training'
 import { diasApi } from '@/api/treino'
 import { BlockBadge } from '@/components/training/block-badge'
 import { ExerciseCard, type ExerciseExecution } from '@/components/training/exercise-card'
@@ -20,6 +20,8 @@ export default function ExecucaoPage() {
   const { restTimerEnabled } = useAppStore()
   const { data: nextDay } = useNextDay()
   const { data: lastDay } = useLastDay()
+  const { data: historico = [] } = useHistoricoDias()
+  const [showHistorico, setShowHistorico] = useState(false)
   const dayId = nextDay?.id as number | undefined
   const { data: day, isLoading } = useDay(dayId)
 
@@ -55,6 +57,7 @@ export default function ExecucaoPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['proximo-dia'] })
       qc.invalidateQueries({ queryKey: ['ultimo-dia'] })
+      qc.invalidateQueries({ queryKey: ['historico-dias'] })
       qc.invalidateQueries({ queryKey: ['dias-stats'] })
       qc.invalidateQueries({ queryKey: ['programa-ativo'] })
       toast({ title: 'Treino concluído! Ótimo trabalho! 💪' })
@@ -67,6 +70,7 @@ export default function ExecucaoPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['proximo-dia'] })
       qc.invalidateQueries({ queryKey: ['ultimo-dia'] })
+      qc.invalidateQueries({ queryKey: ['historico-dias'] })
       qc.invalidateQueries({ queryKey: ['dias-stats'] })
       toast({ title: 'Dia marcado como falta.' })
       navigate('/')
@@ -78,6 +82,7 @@ export default function ExecucaoPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['proximo-dia'] })
       qc.invalidateQueries({ queryKey: ['ultimo-dia'] })
+      qc.invalidateQueries({ queryKey: ['historico-dias'] })
       qc.invalidateQueries({ queryKey: ['dias-stats'] })
       qc.invalidateQueries({ queryKey: ['programa-ativo'] })
       toast({ title: 'Treino revertido para pendente.' })
@@ -140,23 +145,7 @@ export default function ExecucaoPage() {
     <div className="space-y-4 pb-44">
       {/* Header */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <BlockBadge color={day?.block_color ?? 'blue'} name={day?.block_name ?? ''} />
-          {lastDay && (
-            <button
-              onClick={() => {
-                if (confirm(`Reverter Dia ${lastDay.day_number} (${lastDay.status === 'completed' ? 'concluído' : 'falta'}) para pendente?`)) {
-                  revertMutation.mutate(lastDay.id)
-                }
-              }}
-              disabled={revertMutation.isPending}
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-            >
-              <RotateCcw className="h-3 w-3" />
-              Reverter Dia {lastDay.day_number}
-            </button>
-          )}
-        </div>
+        <BlockBadge color={day?.block_color ?? 'blue'} name={day?.block_name ?? ''} />
         <div>
           <h1 className="text-xl font-bold">
             Treino {day?.letter} — {day?.split_description}
@@ -198,6 +187,59 @@ export default function ExecucaoPage() {
           />
         ))}
       </div>
+
+      {/* Histórico de treinos realizados */}
+      {historico.length > 0 && (
+        <div className="border rounded-lg overflow-hidden">
+          <button
+            onClick={() => setShowHistorico(v => !v)}
+            className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              <RotateCcw className="h-4 w-4 text-muted-foreground" />
+              Treinos anteriores ({historico.length})
+            </span>
+            {showHistorico ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </button>
+
+          {showHistorico && (
+            <div className="border-t divide-y">
+              {historico.map(d => (
+                <div key={d.id} className="flex items-center justify-between px-4 py-2.5">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      Dia {d.day_number} — Treino {d.letter} · Sem. {d.week_number}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">{d.split_description}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ml-3 shrink-0">
+                    <span className={cn(
+                      'text-xs px-2 py-0.5 rounded-full font-medium',
+                      d.status === 'completed'
+                        ? 'bg-green-500/15 text-green-400'
+                        : 'bg-red-500/15 text-red-400'
+                    )}>
+                      {d.status === 'completed' ? 'Realizado' : 'Falta'}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Reverter Dia ${d.day_number} para pendente?`)) {
+                          revertMutation.mutate(d.id)
+                        }
+                      }}
+                      disabled={revertMutation.isPending}
+                      className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
+                      title="Reverter para pendente"
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Timer de descanso */}
       {restTimer && (

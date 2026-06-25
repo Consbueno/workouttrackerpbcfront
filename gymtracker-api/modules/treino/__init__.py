@@ -589,8 +589,14 @@ def list_days():
     params = [program["id"]]
 
     if status:
-        sql += " AND td.status = %s"
-        params.append(status)
+        statuses = [s.strip() for s in status.split(",") if s.strip()]
+        if len(statuses) == 1:
+            sql += " AND td.status = %s"
+            params.append(statuses[0])
+        elif statuses:
+            placeholders = ",".join(["%s"] * len(statuses))
+            sql += f" AND td.status IN ({placeholders})"
+            params.extend(statuses)
     if week:
         sql += " AND td.week_number = %s"
         params.append(int(week))
@@ -598,7 +604,10 @@ def list_days():
         sql += " AND tb.name = %s"
         params.append(block)
 
-    sql += " ORDER BY td.day_number ASC"
+    if status and any(s in ["completed", "missed"] for s in status.split(",")):
+        sql += " ORDER BY td.day_number DESC"
+    else:
+        sql += " ORDER BY td.day_number ASC"
     rows = db.query(sql, params)
     return jsonify({"data": _rows_to_list(rows)})
 
