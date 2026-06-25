@@ -48,10 +48,10 @@ interface DayExercise {
 }
 
 const DEFAULT_BLOCKS: BlockConfig[] = [
-  { block_order: 1, name: 'Resistência', start_week: 1, end_week: 4, color: 'blue', target_reps: '15-25', target_intensity: '50-65% 1RM', default_rest_seconds: 45 },
-  { block_order: 2, name: 'Hipertrofia', start_week: 5, end_week: 10, color: 'yellow', target_reps: '8-12', target_intensity: '70-80% 1RM', default_rest_seconds: 75 },
-  { block_order: 3, name: 'Força', start_week: 11, end_week: 14, color: 'red', target_reps: '3-6', target_intensity: '85-95% 1RM', default_rest_seconds: 180 },
-  { block_order: 4, name: 'Deload', start_week: 15, end_week: 16, color: 'gray', target_reps: '12-15', target_intensity: '50-60% 1RM', default_rest_seconds: 60 },
+  { block_order: 1, name: 'Resistência', start_week: 1,  end_week: 4,  color: 'blue',   target_reps: '15-25', target_intensity: '50-65% 1RM', default_rest_seconds: 45  },
+  { block_order: 2, name: 'Hipertrofia', start_week: 5,  end_week: 10, color: 'yellow', target_reps: '8-12',  target_intensity: '65-80% 1RM', default_rest_seconds: 75  },
+  { block_order: 3, name: 'Força',       start_week: 11, end_week: 15, color: 'red',    target_reps: '3-6',   target_intensity: '80-92% 1RM', default_rest_seconds: 180 },
+  { block_order: 4, name: 'Deload',      start_week: 16, end_week: 16, color: 'gray',   target_reps: '12-15', target_intensity: '50-60% 1RM', default_rest_seconds: 60  },
 ]
 
 function genKey() { return Math.random().toString(36).slice(2) }
