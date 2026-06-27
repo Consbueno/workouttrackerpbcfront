@@ -12,10 +12,11 @@ Analise os dados de treino do atleta e gere um relatório estruturado em Portugu
 3. PROGRESSÃO DE CARGA — exercícios que progrediram vs. estagnaram vs. regrediram
 4. PONTOS DE ATENÇÃO — observações do atleta que indicam dor, desconforto ou limitação. Cruze com as restrições corporais cadastradas.
 5. EVOLUÇÃO CORPORAL — análise das medições (peso, circunferências, indicadores de saúde)
-6. DIAGNÓSTICO — conclusão geral: o ciclo está sendo efetivo? O que funcionou? O que não funcionou?
-7. SUGESTÕES PARA O PRÓXIMO CICLO — recomendações concretas: ajustar carga em quais exercícios, mudar algum exercício, modificar frequência, alterar algum bloco, etc.
+6. ALINHAMENTO COM OS OBJETIVOS — avalie se a execução do ciclo está conduzindo o atleta aos seus objetivos declarados. Se o campo estiver em branco, pule esta seção.
+7. DIAGNÓSTICO — conclusão geral: o ciclo está sendo efetivo? O que funcionou? O que não funcionou?
+8. SUGESTÕES PARA O PRÓXIMO CICLO — recomendações concretas alinhadas aos objetivos do atleta: ajustar carga em quais exercícios, mudar algum exercício, modificar frequência, alterar algum bloco, etc.
 
-Considere as condições de saúde e restrições corporais do atleta ao fazer recomendações.
+Considere as condições de saúde, restrições corporais e — principalmente — os objetivos declarados pelo atleta ao fazer recomendações.
 Seja direto e prático. Não use jargão desnecessário. Use dados específicos dos treinos na análise."""
 
 

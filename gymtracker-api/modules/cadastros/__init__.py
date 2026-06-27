@@ -139,8 +139,8 @@ def create_athlete():
     row = db.execute(
         """INSERT INTO athletes
            (user_id, full_name, birth_date, sex, weight_kg, height_cm,
-            is_diabetic, is_hypertensive, is_cardiac, health_notes, body_restrictions)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
+            is_diabetic, is_hypertensive, is_cardiac, health_notes, fitness_goals, body_restrictions)
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING *""",
         (
             user_id,
             data["full_name"],
@@ -152,6 +152,7 @@ def create_athlete():
             data.get("is_hypertensive", False),
             data.get("is_cardiac", False),
             data.get("health_notes"),
+            data.get("fitness_goals"),
             json.dumps(data.get("body_restrictions", []), ensure_ascii=False),
         ),
     )
@@ -171,7 +172,7 @@ def update_athlete():
         """UPDATE athletes SET
            full_name=%s, birth_date=%s, sex=%s, weight_kg=%s, height_cm=%s,
            is_diabetic=%s, is_hypertensive=%s, is_cardiac=%s,
-           health_notes=%s, body_restrictions=%s, updated_at=NOW()
+           health_notes=%s, fitness_goals=%s, body_restrictions=%s, updated_at=NOW()
            WHERE user_id=%s RETURNING *""",
         (
             data["full_name"],
@@ -183,6 +184,7 @@ def update_athlete():
             data.get("is_hypertensive", False),
             data.get("is_cardiac", False),
             data.get("health_notes"),
+            data.get("fitness_goals"),
             json.dumps(data.get("body_restrictions", []), ensure_ascii=False),
             user_id,
         ),

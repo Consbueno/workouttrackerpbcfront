@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS athletes (
     is_hypertensive     BOOLEAN         NOT NULL DEFAULT FALSE,
     is_cardiac          BOOLEAN         NOT NULL DEFAULT FALSE,
     health_notes        TEXT,
+    fitness_goals       TEXT,
     body_restrictions   JSONB           NOT NULL DEFAULT '[]',
     created_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),

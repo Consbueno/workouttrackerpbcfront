@@ -23,7 +23,7 @@ const defaultRestrictions: BodyRestriction[] = BODY_REGIONS.map(r => ({
 const emptyForm = {
   full_name: '', birth_date: '', sex: '', weight_kg: '',
   height_cm: '', is_diabetic: false, is_hypertensive: false,
-  is_cardiac: false, health_notes: '',
+  is_cardiac: false, health_notes: '', fitness_goals: '',
 }
 
 export default function AtletaPage() {
@@ -58,6 +58,7 @@ export default function AtletaPage() {
         is_hypertensive: athlete.is_hypertensive ?? false,
         is_cardiac: athlete.is_cardiac ?? false,
         health_notes: athlete.health_notes ?? '',
+        fitness_goals: athlete.fitness_goals ?? '',
       })
       if (Array.isArray(athlete.body_restrictions) && athlete.body_restrictions.length > 0) {
         const merged = defaultRestrictions.map(def => {
@@ -159,6 +160,27 @@ export default function AtletaPage() {
               <Badge variant="secondary">{bmiCategory(bmi)}</Badge>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Objetivos */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Objetivos com os Treinos</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Label>O que você deseja alcançar?</Label>
+          <Textarea
+            className="mt-1 resize-none"
+            rows={4}
+            placeholder="Ex: perder gordura abdominal, ganhar massa nos ombros e peito, melhorar resistência cardiovascular, preparar para uma competição de fisiculturismo..."
+            value={form.fitness_goals}
+            onChange={e => setForm(f => ({ ...f, fitness_goals: e.target.value }))}
+            maxLength={1000}
+          />
+          <p className="text-xs text-muted-foreground mt-1">
+            Essa informação é usada pela IA para personalizar a análise do seu ciclo de treino.
+          </p>
         </CardContent>
       </Card>
 

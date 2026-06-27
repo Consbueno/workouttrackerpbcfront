@@ -48,6 +48,7 @@ class AthleteSchema(Schema):
     is_hypertensive = fields.Bool(load_default=False)
     is_cardiac = fields.Bool(load_default=False)
     health_notes = fields.Str(allow_none=True)
+    fitness_goals = fields.Str(allow_none=True)
     body_restrictions = fields.List(fields.Dict(), load_default=[])
 
 
