@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/layout/page-header'
 import { cn } from '@/lib/utils'
 import { treinadorApi, type Mensagem } from '@/api/treinador'
 import { toast } from '@/hooks/use-toast'
+import { useQueryClient } from '@tanstack/react-query'
 
 const MODOS = [
   { label: 'Perfil', prompt: 'Mostre meu perfil de atleta e avalie meus dados.' },
@@ -22,7 +23,7 @@ const BOAS_VINDAS: Mensagem = {
 Posso te ajudar com:
 - **Perfil** — interpretar seus dados e condições de saúde
 - **Objetivo** — definir ou revisar sua meta e avaliar se o prazo é realístico
-- **Prescrever** — montar um programa de 16 semanas com periodização em blocos
+- **Prescrever** — montar um programa de 16 semanas com periodização em blocos e **salvar automaticamente** no GymTracker
 - **Avaliar** — analisar seu programa atual e identificar problemas
 - **Diagnóstico** — cruzar suas medições com treinos e projetar resultados
 
@@ -30,11 +31,7 @@ Use os botões acima para começar, ou me diga o que precisa.`,
 }
 
 function renderContent(text: string) {
-  // Detectar bloco ```importar-programa ... ``` e ocultar (apenas avisa o usuário)
-  const hasImport = text.includes('```importar-programa')
-  const cleaned = text.replace(/```importar-programa[\s\S]*?```/g, '')
-
-  const lines = cleaned.split('\n')
+  const lines = text.split('\n')
   const elements: React.ReactNode[] = []
   let i = 0
 
@@ -85,16 +82,7 @@ function renderContent(text: string) {
     i++
   }
 
-  return (
-    <>
-      {elements}
-      {hasImport && (
-        <div className="mt-3 rounded-md border border-primary/30 bg-primary/5 p-3 text-xs text-primary">
-          Programa gerado! Para importar, copie o JSON acima e use o botão <strong>Importar</strong> em <strong>Treino → Manutenção</strong>.
-        </div>
-      )}
-    </>
-  )
+  return <>{elements}</>
 }
 
 function formatInline(text: string): string {
@@ -110,6 +98,7 @@ export default function TreinadorPage() {
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -129,6 +118,12 @@ export default function TreinadorPage() {
       const historico = novasMensagens.slice(1, -1)
       const { data } = await treinadorApi.chat(msg, historico)
       setMensagens(prev => [...prev, { role: 'assistant', content: data.resposta }])
+      if (data.acao === 'programa_criado') {
+        queryClient.invalidateQueries({ queryKey: ['programa-ativo'] })
+        queryClient.invalidateQueries({ queryKey: ['proximo-dia'] })
+        queryClient.invalidateQueries({ queryKey: ['historico-dias'] })
+        toast({ title: '✅ Programa criado no GymTracker!', description: 'Acesse Treino → Manutenção para ver os detalhes.' })
+      }
     } catch {
       toast({ title: 'Erro ao conectar com o treinador. Tente novamente.', variant: 'destructive' })
       setMensagens(prev => prev.slice(0, -1)) // remove a mensagem do usuário se falhar

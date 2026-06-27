@@ -7,5 +7,5 @@ export interface Mensagem {
 
 export const treinadorApi = {
   chat: (mensagem: string, historico: Mensagem[]) =>
-    api.post<{ resposta: string }>('/treinador/chat', { mensagem, historico }),
+    api.post<{ resposta: string; acao?: string }>('/treinador/chat', { mensagem, historico }),
 }
