@@ -255,8 +255,8 @@ export default function ExecucaoPage() {
 
       {/* Botões de ação fixos */}
       <div className={cn(
-        'fixed bottom-16 md:bottom-0 left-0 right-0 z-30 p-3 border-t bg-background',
-        restTimer ? 'bottom-36 md:bottom-24' : ''
+        'fixed left-0 right-0 z-30 p-3 border-t bg-background md:bottom-0',
+        restTimer ? 'bottom-nav-offset-rest md:bottom-24' : 'bottom-nav-offset'
       )}>
         <div className="mx-auto max-w-4xl flex gap-2">
           <Button

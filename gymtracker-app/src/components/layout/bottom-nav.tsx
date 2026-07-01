@@ -13,7 +13,7 @@ export function BottomNav() {
   const { pathname } = useLocation()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background md:hidden">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background pb-safe md:hidden">
       <div className="flex h-16">
         {navItems.map(({ to, icon: Icon, label }) => {
           const active = pathname === to || (to !== '/' && pathname.startsWith(to))
